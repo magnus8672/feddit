@@ -1,5 +1,5 @@
 # feddit
-feddit: A Simple Python tool to Fetch videos from Reddit.
+feddit.py: A Simple Python tool to Fetch videos from Reddit.
 
 Edit feddit.ini to specify file system locations where you have saved ffmpeg.exe, and where to process and store media. Choose a subreddit to pull videos from, and specify how many pages to browse through.
 
