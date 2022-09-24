@@ -133,7 +133,7 @@ while runs < runcount:
     #nullify the index value so it can be re-used in the next loop
     nchild = []
     runNum = str(runs)
-    logging.info("Finished Pass number: " + runs + " of " + runcount)
+    logging.info("Finished Pass number: " + runNum)
     runs += 1
 
 #Make all the videos from the URLS we gathered
