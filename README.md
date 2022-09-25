@@ -14,3 +14,9 @@ By default it will search r/aww. If you want to be gross, put a different subred
 The project is based on codenzyme's excellent example: https://github.com/rk26072003/Reddit-Video-downloader-in-13-lines-of-python/blob/main/main.py 
 I have used this tool along with another (now deprecated) project for grabbing instagram videos, in order the generate the videos seen here: 
 https://youtu.be/agOJJgPTVqc by passing them through my OTHER project Python video compiler: https://github.com/magnus8672/pythonvideocompiler 
+
+If you get error: 
+    nchild.append(d["data"]['children'][99]['data']['id'])
+IndexError: list index out of range
+
+You might have just run out of posts. Try reducing the size of runcount in feddit.ini
