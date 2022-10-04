@@ -109,6 +109,7 @@ def makeVideos(scrapedids):
 def cleanUp():
     #cleanup artifacts when we are done
     for file in os.listdir(rootlocation):
+        # TODO: un metodo para la limpieza individual
         logging.info("cleaning up " + file)
         print("cleaning up " + file)
         dfile = rootlocation + file
