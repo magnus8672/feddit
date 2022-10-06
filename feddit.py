@@ -16,7 +16,7 @@ import configparser
 
 #PARAMS
 config = configparser.ConfigParser()
-config.read('wwdfeddit.ini')
+config.read('feddit.ini')
 rootlocation = config['options']['rootLocation']
 targetlocation = config['options']['targetlocation']
 ffmpeglocation = config['options']['ffmpeglocation']
