@@ -1,10 +1,9 @@
 #feddit.py Fetch video from reddit
 #magnus8672 9/2022
 #A simple Tool for scraping video URLS from a given subreddit
-#Use the feddit.ini to change variables for locations of input and output to match your file system layout.
+#Use the PARAMS section to change variables for locations of input and output to match your file system layout.
 #Remember to escape (bouble slash) any slash "\" characters in your file path as python will otherwise interpreate some combos of a "\" 
 #and a letter as a control character and freak the heck out" C:\\some\\dir\\ == good. C:\some\dir\ == bad
-#MAKE SURE YOUR SPECIFIED DIRECTORIES EXIST. I am lazy and did not add any checks for that. 
 
 from logging import exception
 import requests
@@ -17,7 +16,7 @@ import configparser
 
 #PARAMS
 config = configparser.ConfigParser()
-config.read('feddit.ini')
+config.read('wwdfeddit.ini')
 rootlocation = config['options']['rootLocation']
 targetlocation = config['options']['targetlocation']
 ffmpeglocation = config['options']['ffmpeglocation']
