@@ -12,25 +12,18 @@ import json
 import time
 from datetime import datetime
 import logging
-import configparser
+from src.config import getconfig
 
-#PARAMS
-config = configparser.ConfigParser()
-config.read('feddit.ini')
-rootlocation = config['options']['rootLocation']
-targetlocation = config['options']['targetlocation']
-ffmpeglocation = config['options']['ffmpeglocation']
-baseurl = config['options']['baseurl']
-runcount = int(config ['options']['runcount'])
 runs = 0
 
+config = getconfig()
 #set logging params
 logging.basicConfig(level=logging.INFO, filename="feddit.log", filemode="a+", format="%(asctime)-15s %(levelname)-8s %(message)s")
 #Get the current time in a file name compatible string
 date = datetime.now().strftime("%Y_%m_%d_%I_%M")
 logging.info("Feddit Reddit Video Fetcher started running at: " + date)
 #Send a request with associated user agent (We just copied some apple one from the interbutts) to get the json which contaisn video links
-logging.info("Fetching JSON URL: " + baseurl)
+logging.info("Fetching JSON URL: " + config["baseurl"])
 
 #set up an empty list to itterate into
 scrapedids = []
@@ -43,7 +36,7 @@ vidcounter = 0
 
 def getJson(indexParam):
     #construct a URL from the base URL + needed URI Params
-    url = baseurl + ".json?" + indexParam + "limit=100"
+    url = config.baseurl + ".json?" + indexParam + "limit=100"
     #fire request to get the json including a made up user agent string we googled.
     r = requests.get(url,headers={"User-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"})
     #cast the content of the json we got to a data object to return for the next function
@@ -87,8 +80,8 @@ def makeVideos(scrapedids):
         svideourl = str(video_url)
         logging.info("Download Video and audio from: " + svideourl)
         #stuff the video and audio files into aa staging area to be processed with ffmpeg
-        videoname = rootlocation + "video" + str(vidcounter) + ".mp4"
-        audioname = rootlocation + "audio" + str(vidcounter) + ".mp3"
+        videoname = config["rootlocation"] + "video" + str(vidcounter) + ".mp4"
+        audioname = config["rootlocation"] + "audio" + str(vidcounter) + ".mp3"
         #open and save the content of the video and audio URLS
         with open(videoname,"wb") as f:
             g = requests.get(video_url,stream=True)
@@ -97,9 +90,9 @@ def makeVideos(scrapedids):
             g = requests.get(audio_url,stream=True)
             f.write(g.content)
         #Process audio and video URLS and dump combined output in the target location
-        cvidname = targetlocation + "redditvideo" + date + "_" + str(vidcounter) + ".mp4"
+        cvidname = config["targetlocation"] + "redditvideo" + date + "_" + str(vidcounter) + ".mp4"
         logging.info("Writing Final video: " + cvidname)    
-        os.system(ffmpeglocation + "ffmpeg.exe -i " +  videoname + " -i "  + audioname + " -c copy " + cvidname)
+        os.system(config["ffmpeglocation"] + "ffmpeg.exe -i " +  videoname + " -i "  + audioname + " -c copy " + cvidname)
         #be nice to the reddit servers
         time.sleep(2)
         #increment counter so next video name will not collide with previous video
@@ -107,15 +100,15 @@ def makeVideos(scrapedids):
 
 def cleanUp():
     #cleanup artifacts when we are done
-    for file in os.listdir(rootlocation):
+    for file in os.listdir(config.rootlocation):
         # TODO: un metodo para la limpieza individual
         logging.info("cleaning up " + file)
         print("cleaning up " + file)
-        dfile = rootlocation + file
+        dfile = config["rootlocation"] + file
         os.remove(dfile)
 
 #Main program loop. Call each function in order the configured number of times
-while runs < runcount:
+while runs < config.runcount:
     #gather JSON Data from URL
     data = getJson(indexParam)
     #find all the Video URLS within the json children
