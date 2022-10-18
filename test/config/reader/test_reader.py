@@ -1,6 +1,6 @@
 from unittest import TestCase, mock
 
-from helper.fake_file import fake_file
+from helper.fake_file import fake_ini_file
 from src.config.reader import read, validate_filename
 
 
@@ -14,8 +14,7 @@ class Test(TestCase):
         """
         filename = 'feddit.ini'
         section_name = 'options'
-        fake_section = f"[{section_name}]\n"
-        mock_open.return_value = fake_file(fake_section)
+        mock_open.return_value = fake_ini_file()
 
         config = read(filename)
         self.assertTrue(config.has_section(section_name))
