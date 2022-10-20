@@ -5,43 +5,18 @@
 #Remember to escape (bouble slash) any slash "\" characters in your file path as python will otherwise interpreate some combos of a "\" 
 #and a letter as a control character and freak the heck out" C:\\some\\dir\\ == good. C:\some\dir\ == bad
 
-from logging import exception
 import requests
 import os
-import json
 import time
 from datetime import datetime
 import logging
-from src.config import getconfig
+from config import getconfig
+from json import getjson
 
-runs = 0
-
+# TODO: config y scrapedids a main
 config = getconfig()
-#set logging params
-logging.basicConfig(level=logging.INFO, filename="feddit.log", filemode="a+", format="%(asctime)-15s %(levelname)-8s %(message)s")
-#Get the current time in a file name compatible string
-date = datetime.now().strftime("%Y_%m_%d_%I_%M")
-logging.info("Feddit Reddit Video Fetcher started running at: " + date)
-#Send a request with associated user agent (We just copied some apple one from the interbutts) to get the json which contaisn video links
-logging.info("Fetching JSON URL: " + config["baseurl"])
-
-#set up an empty list to itterate into
+# set up an empty list to itterate into
 scrapedids = []
-#set an empty array to capture index of 99th child in each json request
-nchild = []
-#instantiate empty param string to pass for the index so we can get the top page, and subsequenty move to additional pages of json
-indexParam = ""
-#set a counter so each loop through generating the video will get a unique name
-vidcounter = 0
-
-def getJson(indexParam):
-    #construct a URL from the base URL + needed URI Params
-    url = config.baseurl + ".json?" + indexParam + "limit=100"
-    #fire request to get the json including a made up user agent string we googled.
-    r = requests.get(url,headers={"User-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"})
-    #cast the content of the json we got to a data object to return for the next function
-    d = r.json()
-    return d
 
 
 def getChildren(d):
@@ -69,6 +44,7 @@ def getChildren(d):
         logging.info("URL: " + svurl)
     #IDK if I even need to return this value. It's a global and I could just do it that way I guess. But it seems to work so not going to mess with it
     return scrapedids
+
 
 def makeVideos(scrapedids):
     logging.info("Begin Processing Videos from list:")
@@ -98,6 +74,7 @@ def makeVideos(scrapedids):
         #increment counter so next video name will not collide with previous video
         vidcounter += 1
 
+
 def cleanUp():
     #cleanup artifacts when we are done
     for file in os.listdir(config.rootlocation):
@@ -107,29 +84,50 @@ def cleanUp():
         dfile = config["rootlocation"] + file
         os.remove(dfile)
 
-#Main program loop. Call each function in order the configured number of times
-while runs < config.runcount:
-    #gather JSON Data from URL
-    data = getJson(indexParam)
-    #find all the Video URLS within the json children
-    getChildren(data)
-    #set an index of the 99th value from the last page of JSON we gathered
-    baseIndex = str(nchild)
-    #clean the excess brackets and quotes from the string so it can be part of the next JSON URL
-    cleanIndex = baseIndex[2:-2]
-    print(cleanIndex)
-    logging.info("New JSON Index = " + cleanIndex)
-    #set a new index value parameter in the URI so we can get the next 100 json objects after the index
-    indexParam = "after=t3_" + cleanIndex + "&"
-    #be nice to reddits servers
-    time.sleep(2)
-    #nullify the index value so it can be re-used in the next loop
-    nchild = []
-    runNum = str(runs)
-    logging.info("Finished Pass number: " + runNum)
-    runs += 1
 
-#Make all the videos from the URLS we gathered
-makeVideos(scrapedids)
-#cleanup all the left over original video and audio files
-cleanUp()
+def main():
+    runs = 0
+    # set logging params
+    logging.basicConfig(level=logging.INFO, filename="feddit.log", filemode="a+",
+                        format="%(asctime)-15s %(levelname)-8s %(message)s")
+    # Get the current time in a file name compatible string
+    date = datetime.now().strftime("%Y_%m_%d_%I_%M")
+    logging.info("Feddit Reddit Video Fetcher started running at: " + date)
+    # Send a request with associated user agent (We just copied some apple one from the interbutts) to get the json which contaisn video links
+    logging.info("Fetching JSON URL: " + config["baseurl"])
+
+    # set an empty array to capture index of 99th child in each json request
+    nchild = []
+    params = {}
+    # set a counter so each loop through generating the video will get a unique name
+    vidcounter = 0
+
+    #Main program loop. Call each function in order the configured number of times
+    while runs < config.runcount:
+        #gather JSON Data from URL
+        data = getjson(params)
+        #find all the Video URLS within the json children
+        getChildren(data)
+        #set an index of the 99th value from the last page of JSON we gathered
+        baseIndex = str(nchild)
+        #clean the excess brackets and quotes from the string so it can be part of the next JSON URL
+        cleanIndex = baseIndex[2:-2]
+        print(cleanIndex)
+        logging.info("New JSON Index = " + cleanIndex)
+        #set a new index value parameter in the URI so we can get the next 100 json objects after the index
+        params['after'] = f"t3_{cleanIndex}"
+        #be nice to reddits servers
+        time.sleep(2)
+        #nullify the index value so it can be re-used in the next loop
+        nchild = []
+        runNum = str(runs)
+        logging.info("Finished Pass number: " + runNum)
+        runs += 1
+
+    #Make all the videos from the URLS we gathered
+    makeVideos(scrapedids)
+    #cleanup all the left over original video and audio files
+    cleanUp()
+
+
+main()
