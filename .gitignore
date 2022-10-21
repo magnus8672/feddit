@@ -1,0 +1,4 @@
+venv
+feddit.log
+test/**/.pytest_cache/**/*
+.idea
