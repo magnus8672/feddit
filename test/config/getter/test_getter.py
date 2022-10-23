@@ -1,6 +1,6 @@
 from unittest import mock, TestCase
 
-from config import getconfig
+from parser import getconfig
 from helper.fake_file import fake_ini_file
 
 

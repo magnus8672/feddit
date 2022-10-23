@@ -20,7 +20,7 @@ scrapedids = []
 
 
 def getChildren(d):
-    #This is based on the structure of reddits json output. We want the fallback URLs of any videos nested under data:children:child(This will be an int 0-25):data:secure_media:reddit_video:fallback_url
+    #This is based on the structure of reddits reddit output. We want the fallback URLs of any videos nested under data:children:child(This will be an int 0-25):data:secure_media:reddit_video:fallback_url
     #The try is simply to not care if any children don't have videos as we are not interested in those posts, and I don't care to do a nested if to selectively grab children which contain a video link
     global nchild
     logging.info("Grabbing list of Video URLS from JSON")
@@ -30,7 +30,7 @@ def getChildren(d):
         except:
             print("encountered an exception with child" )
             echild = str(child["data"]['secure_media'])
-            logging.error("A child object in json did not contain a video URL. Video Type was: " + echild)
+            logging.error("A child object in reddit did not contain a video URL. Video Type was: " + echild)
 
     #get the 100th childs ID (it starts at 0 so 100th is id 99) We need to this access the "next page of JSON data"
     nchild.append(d["data"]['children'][99]['data']['id'])
@@ -93,10 +93,10 @@ def main():
     # Get the current time in a file name compatible string
     date = datetime.now().strftime("%Y_%m_%d_%I_%M")
     logging.info("Feddit Reddit Video Fetcher started running at: " + date)
-    # Send a request with associated user agent (We just copied some apple one from the interbutts) to get the json which contaisn video links
+    # Send a request with associated user agent (We just copied some apple one from the interbutts) to get the reddit which contaisn video links
     logging.info("Fetching JSON URL: " + config["baseurl"])
 
-    # set an empty array to capture index of 99th child in each json request
+    # set an empty array to capture index of 99th child in each reddit request
     nchild = []
     params = {}
     # set a counter so each loop through generating the video will get a unique name
@@ -106,7 +106,7 @@ def main():
     while runs < config.runcount:
         #gather JSON Data from URL
         data = getjson(params)
-        #find all the Video URLS within the json children
+        #find all the Video URLS within the reddit children
         getChildren(data)
         #set an index of the 99th value from the last page of JSON we gathered
         baseIndex = str(nchild)
@@ -114,7 +114,7 @@ def main():
         cleanIndex = baseIndex[2:-2]
         print(cleanIndex)
         logging.info("New JSON Index = " + cleanIndex)
-        #set a new index value parameter in the URI so we can get the next 100 json objects after the index
+        #set a new index value parameter in the URI so we can get the next 100 reddit objects after the index
         params['after'] = f"t3_{cleanIndex}"
         #be nice to reddits servers
         time.sleep(2)

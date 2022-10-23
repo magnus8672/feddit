@@ -9,7 +9,7 @@ class Test(TestCase):
         """
         GIVEN indexParam is greater than 0
         WHEN the function getJson is executed
-        THEN it should return a json string with returned data from server
+        THEN it should return a reddit string with returned data from server
         """
 
         self.assertTrue(False)
@@ -18,7 +18,7 @@ class Test(TestCase):
         """
         GIVEN indexParam is 0
         WHEN the function getJson is executed
-        THEN it should return a json string with returned data from server
+        THEN it should return a reddit string with returned data from server
         """
 
         self.assertTrue(False)
@@ -27,7 +27,7 @@ class Test(TestCase):
         """
         GIVEN indexParam is less than 0
         WHEN the function getJson is executed
-        THEN it should return a json string with returned data from server
+        THEN it should return a reddit string with returned data from server
         """
 
         self.assertTrue(isinstance(feddit.getJson(-1), str))
