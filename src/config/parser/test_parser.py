@@ -1,10 +1,10 @@
 from unittest import mock, TestCase
 
-from parser import getconfig
+from config.parser import getconfig
 from helper.fake_file import fake_ini_file
 
 
-class Test(TestCase):
+class TestConfigParser(TestCase):
     @mock.patch('config.reader.configparser.open')
     def test_empty_getconfig(self, mock_open):
         """

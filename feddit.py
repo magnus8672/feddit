@@ -10,8 +10,8 @@ import os
 import time
 from datetime import datetime
 import logging
-from config import getconfig
-from json import getjson
+from config.parser import getconfig
+from reddit.parser import get_json
 
 # TODO: config y scrapedids a main
 config = getconfig()
@@ -105,7 +105,7 @@ def main():
     #Main program loop. Call each function in order the configured number of times
     while runs < config.runcount:
         #gather JSON Data from URL
-        data = getjson(params)
+        data = get_json(params)
         #find all the Video URLS within the reddit children
         getChildren(data)
         #set an index of the 99th value from the last page of JSON we gathered

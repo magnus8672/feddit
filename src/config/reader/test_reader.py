@@ -4,7 +4,7 @@ from helper.fake_file import fake_ini_file
 from config.reader import read, validate_filename
 
 
-class Test(TestCase):
+class TestConfigReader(TestCase):
     @mock.patch('config.reader.configparser.open')
     def test_read(self, mock_open):
         """

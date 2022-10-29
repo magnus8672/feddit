@@ -10,4 +10,5 @@ def read(filename):
 
 def validate_filename(filename):
     if not filename:
+        # TODO: levantar una excepcion más detallada
         raise Exception

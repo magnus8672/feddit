@@ -6,7 +6,7 @@ from helper.mock_response import MockResponse
 from reddit.downloader import download
 
 
-class Test(TestCase):
+class TestRedditDownloader(TestCase):
     @mock.patch('reddit.downloader.requests.get')
     def test_download_is_successfull(self, mocked):
         """

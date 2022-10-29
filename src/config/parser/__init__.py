@@ -1,9 +1,9 @@
-import reader
+from config.reader import read
 
 FILENAME = 'feddit.ini'
 
 
 def getconfig():
-    config = reader.read(FILENAME)
+    config = read(FILENAME)
     return dict(config['options'])
 
