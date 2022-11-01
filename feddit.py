@@ -10,40 +10,13 @@ import os
 import time
 from datetime import datetime
 import logging
-from config.parser import getconfig
-from reddit.parser import get_json
+from config.parser import get_config
+from reddit.parser import get_json, get_videos
 
 # TODO: config y scrapedids a main
-config = getconfig()
+config = get_config()
 # set up an empty list to itterate into
 scrapedids = []
-
-
-def getChildren(d):
-    #This is based on the structure of reddits reddit output. We want the fallback URLs of any videos nested under data:children:child(This will be an int 0-25):data:secure_media:reddit_video:fallback_url
-    #The try is simply to not care if any children don't have videos as we are not interested in those posts, and I don't care to do a nested if to selectively grab children which contain a video link
-    global nchild
-    logging.info("Grabbing list of Video URLS from JSON")
-    for child in d['data']['children']:
-        try:
-            scrapedids.append(child["data"]['secure_media']['reddit_video']['fallback_url'])
-        except:
-            print("encountered an exception with child" )
-            echild = str(child["data"]['secure_media'])
-            logging.error("A child object in reddit did not contain a video URL. Video Type was: " + echild)
-
-    #get the 100th childs ID (it starts at 0 so 100th is id 99) We need to this access the "next page of JSON data"
-    nchild.append(d["data"]['children'][99]['data']['id'])
-    print(str(nchild))
-
-    print (scrapedids)
-    logging.info("Finished Scraping URLS \n URL list: ")
-    # log out a list of the URL's we identified 
-    for vurl in scrapedids:
-        svurl = str(vurl)
-        logging.info("URL: " + svurl)
-    #IDK if I even need to return this value. It's a global and I could just do it that way I guess. But it seems to work so not going to mess with it
-    return scrapedids
 
 
 def makeVideos(scrapedids):
@@ -107,7 +80,7 @@ def main():
         #gather JSON Data from URL
         data = get_json(params)
         #find all the Video URLS within the reddit children
-        getChildren(data)
+        get_videos(data)
         #set an index of the 99th value from the last page of JSON we gathered
         baseIndex = str(nchild)
         #clean the excess brackets and quotes from the string so it can be part of the next JSON URL
