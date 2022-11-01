@@ -1,6 +1,6 @@
 from unittest import mock, TestCase
 
-from config.parser import getconfig
+from config.parser import get_config
 from helper.fake_file import fake_ini_file
 
 
@@ -14,7 +14,7 @@ class TestConfigParser(TestCase):
         """
         mock_open.return_value = fake_ini_file()
 
-        config = getconfig()
+        config = get_config()
 
         self.assertTrue(type(config) is dict)
 
@@ -29,6 +29,6 @@ class TestConfigParser(TestCase):
         content = f"{key}=yes"
         mock_open.return_value = fake_ini_file(content)
 
-        config = getconfig()
+        config = get_config()
 
         self.assertTrue(key in config)
