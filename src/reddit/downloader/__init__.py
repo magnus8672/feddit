@@ -6,7 +6,7 @@ HEADERS = {
 }
 
 
-def download(url, params={}):
-    request = requests.get(url, headers=HEADERS, params=params)
+def download(url, params={}, stream=False):
+    request = requests.get(url, headers=HEADERS, params=params, stream=stream)
+    request.raise_for_status()
     return request
-

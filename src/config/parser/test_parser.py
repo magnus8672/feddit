@@ -1,7 +1,7 @@
 from unittest import mock, TestCase
 
 from config.parser import get_config
-from helper.fake_file import fake_ini_file
+from tests_helpers.fake_file import fake_ini_file
 
 
 class TestConfigParser(TestCase):

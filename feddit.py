@@ -12,46 +12,18 @@ from datetime import datetime
 import logging
 from config.parser import get_config
 from reddit.parser import get_json, get_videos
+from reddit.videos import create_all
 
-# TODO: config y scrapedids a main
+# TODO: config and scrapedids to main
 config = get_config()
 # set up an empty list to itterate into
-scrapedids = []
-
-
-def makeVideos(scrapedids):
-    logging.info("Begin Processing Videos from list:")
-    #go get all the video/audio links from the URLs we identified and squish them together into a final video
-    for video_url in scrapedids:
-        global vidcounter
-        #some nonesense to infer the AUDIO URL based on the associated Video URL we gathered
-        audio_url = "https://v.redd.it/"+video_url.split("/")[3]+"/DASH_audio.mp4"
-        svideourl = str(video_url)
-        logging.info("Download Video and audio from: " + svideourl)
-        #stuff the video and audio files into aa staging area to be processed with ffmpeg
-        videoname = config["rootlocation"] + "video" + str(vidcounter) + ".mp4"
-        audioname = config["rootlocation"] + "audio" + str(vidcounter) + ".mp3"
-        #open and save the content of the video and audio URLS
-        with open(videoname,"wb") as f:
-            g = requests.get(video_url,stream=True)
-            f.write(g.content)
-        with open(audioname,"wb") as f:
-            g = requests.get(audio_url,stream=True)
-            f.write(g.content)
-        #Process audio and video URLS and dump combined output in the target location
-        cvidname = config["targetlocation"] + "redditvideo" + date + "_" + str(vidcounter) + ".mp4"
-        logging.info("Writing Final video: " + cvidname)    
-        os.system(config["ffmpeglocation"] + "ffmpeg.exe -i " +  videoname + " -i "  + audioname + " -c copy " + cvidname)
-        #be nice to the reddit servers
-        time.sleep(2)
-        #increment counter so next video name will not collide with previous video
-        vidcounter += 1
+scraped_ids = []
 
 
 def cleanUp():
     #cleanup artifacts when we are done
     for file in os.listdir(config.rootlocation):
-        # TODO: un metodo para la limpieza individual
+        # TODO: a method for individual cleaning instead for all
         logging.info("cleaning up " + file)
         print("cleaning up " + file)
         dfile = config["rootlocation"] + file
@@ -80,7 +52,7 @@ def main():
         #gather JSON Data from URL
         data = get_json(params)
         #find all the Video URLS within the reddit children
-        get_videos(data)
+        scrapedids = get_videos(data)
         #set an index of the 99th value from the last page of JSON we gathered
         baseIndex = str(nchild)
         #clean the excess brackets and quotes from the string so it can be part of the next JSON URL
@@ -98,7 +70,7 @@ def main():
         runs += 1
 
     #Make all the videos from the URLS we gathered
-    makeVideos(scrapedids)
+    create_all(scrapedids)
     #cleanup all the left over original video and audio files
     cleanUp()
 

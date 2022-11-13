@@ -2,7 +2,7 @@ from unittest import TestCase, mock
 
 import requests.exceptions
 
-from helper.mock_response import MockResponse
+from tests_helpers.mock_response import MockResponse
 from reddit.downloader import download
 
 
@@ -17,7 +17,7 @@ class TestRedditDownloader(TestCase):
         mocked.return_value = MockResponse()
         url = ""
         params = {}
-        request = download(url, params)
+        request = download(url, params, True)
         self.assertTrue(request.ok)
 
     @mock.patch('reddit.downloader.requests.get')
@@ -32,3 +32,5 @@ class TestRedditDownloader(TestCase):
             url = ""
             params = {}
             download(url, params)
+
+    #TODO: Stream test
