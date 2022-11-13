@@ -11,6 +11,7 @@ import time
 from datetime import datetime
 import logging
 from config.parser import get_config
+from filesystem.directory import clean
 from reddit.parser import get_json, get_videos
 from reddit.videos import create_all
 
@@ -18,16 +19,6 @@ from reddit.videos import create_all
 config = get_config()
 # set up an empty list to itterate into
 scraped_ids = []
-
-
-def cleanUp():
-    #cleanup artifacts when we are done
-    for file in os.listdir(config.rootlocation):
-        # TODO: a method for individual cleaning instead for all
-        logging.info("cleaning up " + file)
-        print("cleaning up " + file)
-        dfile = config["rootlocation"] + file
-        os.remove(dfile)
 
 
 def main():
@@ -72,7 +63,7 @@ def main():
     #Make all the videos from the URLS we gathered
     create_all(scrapedids)
     #cleanup all the left over original video and audio files
-    cleanUp()
+    clean(config["rootlocation"])
 
 
 main()

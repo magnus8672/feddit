@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 from unittest.mock import MagicMock, mock_open, patch
 
-from filesystem.file import writer
+from filesystem.file import writer, delete
 
 
 class TestFilesystemFile(TestCase):
@@ -60,4 +60,27 @@ class TestFilesystemFile(TestCase):
             filename = "file.txt"
             mode = "w"
             writer(content, filename, mode)
+
+    @mock.patch("os.remove")
+    def test_file_deletion(self, mocked_delete):
+        """
+        GIVEN a file route
+        WHEN is trying to delete a file
+        THEN the file delete function should be executed
+        """
+        file_route = "C://file.txt"
+        delete(file_route)
+        self.assertTrue(mocked_delete.called)
+
+    @mock.patch("os.remove")
+    def test_file_deletion_raise_exception(self, mocked_delete):
+        """
+        GIVEN a file route that does not exist
+        WHEN is trying to delete a file
+        THEN an exception should be raised
+        """
+        with self.assertRaises(Exception):
+            mocked_delete.side_effect = OSError()
+            file_route = "C://file.txt"
+            delete(file_route)
 
