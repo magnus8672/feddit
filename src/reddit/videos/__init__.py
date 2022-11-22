@@ -1,6 +1,8 @@
 import time
 from datetime import datetime
 
+from requests import HTTPError
+
 from config.parser import get_config
 from filesystem.file import writer
 from reddit.downloader import download
@@ -35,8 +37,8 @@ def create(url):
 
 
 def save(url, filename):
-    file = download(url, stream=True)
-    writer(file.content, filename, MODE)
-
-
-
+    try:
+        file = download(url, stream=True)
+        writer(file.content, filename, MODE)
+    except (HTTPError, OSError) as error:
+        print("there was an error trying download the file" + str(error))

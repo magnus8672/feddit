@@ -1,17 +1,30 @@
 from unittest import TestCase
-from reddit.parser import get_videos, check_video
+from reddit.parser import check_video, extract_video_url
 
 
 class TestRedditParser(TestCase):
     def test_get_videos(self):
         """
-        GIVEN an json string
+        GIVEN an array representation of a json response
         WHEN is getting the urls of videos
         THEN it should a list of urls of videos
         """
-        mocked_json = "{\"data\": {\"children\": [{\"data\": {\"secure_media\": {\"reddit_video\": " \
-                      "{\"fallback_url\": \"https://v.redd.it/gyh95hiqc0b11/DASH_9_6_M?source=fallback\"}}}},{}]}}"
-        videos = get_videos(mocked_json)
+        mocked_response = {
+            'data': {
+                'children': [
+                    {
+                        'data': {
+                            'secure_media': {
+                                'reddit_video': {
+                                    'fallback_url': 'https://v.redd.it/gyh95hiqc0b11/DASH_9_6_M?source=fallback'
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        videos = extract_video_url(mocked_response['data']['children'])
         self.assertTrue(len(videos) == 1)
 
     def test_check_video_exists(self):

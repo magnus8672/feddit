@@ -24,37 +24,40 @@ class TestRedditVideos(TestCase):
         save(url, filename)
         self.assertTrue(mock_writer.called)
 
+    @mock.patch('builtins.print')
     @mock.patch('reddit.videos.get_config')
-    def test_save_download_error(self, mock_get_config):
-        with self.assertRaises(Exception):
-            """
-            GIVEN a video file url with a new filename
-            WHEN the video is downloaded
-            THEN it should be raised an exception
-            """
-            mocked_request = MagicMock()
-            mocked_request.status_code = "500"
-            mock_get_config.return_value = {}
-            filename = "avideo.mp4"
-            url = "http://www.avideo.com/avideo.mp4"
-            save(url, filename)
+    def test_save_download_error(self, mock_get_config, mock_print):
+        """
+        GIVEN a video file url with a new filename
+        WHEN the video is downloaded
+        THEN it should be raised an exception
+        """
+        mocked_request = MagicMock()
+        mocked_request.status_code = "500"
+        mock_get_config.return_value = {}
+        filename = "avideo.mp4"
+        url = "http://www.avideo.com/avideo.mp4"
+        save(url, filename)
+        self.assertTrue(mock_print.called)
 
+    @mock.patch('builtins.print')
     @mock.patch('reddit.videos.get_config')
     @mock.patch('reddit.videos.writer')
-    def test_save_write_file_error(self, mock_writer, mock_get_config):
-        with self.assertRaises(Exception):
-            """
-            GIVEN a video file url with a new filename
-            WHEN the video is wrote to filesystem
-            THEN it should be raised an exception
-            """
-            mocked_request = MagicMock()
-            mocked_request.content = ""
-            mock_get_config.return_value = {}
-            mock_writer.return_value.raiseError.side_effect = FileExistsError()
-            filename = "avideo.mp4"
-            url = "http://www.avideo.com/avideo.mp4"
-            save(url, filename)
+    def test_save_write_file_error(self, mock_writer, mock_get_config, mock_print):
+        """
+        GIVEN a video file url with a new filename
+        WHEN the video is writen to filesystem
+        THEN it should be raised an exception
+        """
+        mocked_request = MagicMock()
+        mocked_request.content = ""
+        mock_get_config.return_value = {}
+        mock_writer.return_value.raiseError.side_effect = Exception()
+        filename = "avideo.mp4"
+        url = "http://www.avideo.com/avideo.mp4"
+        save(url, filename)
+        self.assertTrue(mock_print.called)
+
 
     @mock.patch('reddit.videos.writer')
     @mock.patch('reddit.videos.download')
