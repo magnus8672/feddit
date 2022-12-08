@@ -1,4 +1,5 @@
 import json
+import logging
 
 from reddit.downloader import download
 from config.parser import get_config
@@ -25,7 +26,7 @@ def check_video(video):
         video['data']['secure_media']['reddit_video']['fallback_url']
         return True
     except (KeyError, TypeError):
-        # TODO: create log
+        logging.error("A child object in json did not contain a video URL. Video Type was: %s", video)
         return False
 
 

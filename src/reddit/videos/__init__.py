@@ -1,3 +1,4 @@
+import logging
 import time
 from datetime import datetime
 
@@ -26,10 +27,11 @@ def create(url):
     root_location = config["rootlocation"]
     target_location = config["targetlocation"]
     video_id = url.split("/")[3]
-
     audio_url = f"https://v.redd.it/{video_id}/DASH_audio.mp4"
     video_name = f"{root_location}video{date}.mp4"
     audio_name = f"{root_location}audio{date}.mp3"
+
+    logging.info("Download Video and audio from: " + url)
     save(url, video_name)
     save(audio_url, audio_name)
     filename = f"{target_location}redditvideo{date}.mp4"

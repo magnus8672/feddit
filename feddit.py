@@ -33,9 +33,11 @@ def main():
     #Main program loop. Call each function in order the configured number of times
     while runs < run_count:
         #gather JSON Data from URL
+        logging.info("Grabbing list of Video URLS from JSON")
         response = get_json(params)
         videos = response['data']['children']
         #find all the Video URLS within the reddit children
+        logging.info("Grabbing list of Video URLS from JSON")
         scraped_urls += extract_video_url(videos)
         #set a new index value parameter in the URI so we can get the next 100 reddit objects after the index
         next_index = extract_next_index(response)
@@ -49,7 +51,9 @@ def main():
         logging.info("Finished Pass number: " + str(runs))
         runs += 1
 
+    logging.info("Finished Scraping URLS \n URL list: %s", scraped_urls)
     #Make all the videos from the URLS we gathered
+    logging.info("Begin Processing Videos from list:")
     create_all(scraped_urls)
     #cleanup all the left over original video and audio files
     clean(config["rootlocation"])
