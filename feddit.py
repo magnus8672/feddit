@@ -8,6 +8,8 @@
 import time
 from datetime import datetime
 import logging
+from pprint import pformat
+
 from config.parser import get_config
 from filesystem.directory import clean
 from reddit.parser import get_json, extract_next_index, extract_video_url
@@ -51,7 +53,7 @@ def main():
         logging.info("Finished Pass number: " + str(runs))
         runs += 1
 
-    logging.info("Finished Scraping URLS \n URL list: %s", scraped_urls)
+    logging.info("Finished Scraping URLS \n URL list: %s", pformat(scraped_urls))
     #Make all the videos from the URLS we gathered
     logging.info("Begin Processing Videos from list:")
     create_all(scraped_urls)
