@@ -1,4 +1,6 @@
 import logging
+import os.path
+import shutil
 import time
 from datetime import datetime
 
@@ -35,7 +37,11 @@ def create(url):
     save(url, video_name)
     save(audio_url, audio_name)
     filename = f"{target_location}redditvideo{date}.mp4"
-    merge(video_name, audio_name, filename)
+
+    if os.path.exists(audio_name):
+        merge(video_name, audio_name, filename)
+    else:
+        shutil.copy2(video_name, filename)
 
 
 def save(url, filename):
