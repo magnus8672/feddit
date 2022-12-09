@@ -31,6 +31,4 @@ def check_video(video):
 
 
 def extract_next_index(loaded_json):
-    next_index = loaded_json['data']['after']
-    next_index = next_index[2:-2]
-    return f"t3_{next_index}"
+    return loaded_json['data']['after']
