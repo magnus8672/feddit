@@ -58,12 +58,12 @@ class TestRedditVideos(TestCase):
         save(url, filename)
         self.assertTrue(mock_print.called)
 
-
+    @mock.patch('os.path.exists')
     @mock.patch('reddit.videos.writer')
     @mock.patch('reddit.videos.download')
     @mock.patch('reddit.videos.get_config')
     @mock.patch('reddit.videos.merge')
-    def test_create_video(self, mock_merge, mock_get_config, mock_download, mock_writer):
+    def test_create_video(self, mock_merge, mock_get_config, mock_download, mock_writer, mock_path_exists):
         """
         GIVEN a video file valid url
         WHEN the video is downloaded from reddit
@@ -72,11 +72,33 @@ class TestRedditVideos(TestCase):
         mocked_request = MagicMock()
         mocked_request.content = ""
         mock_download.return_value = mocked_request
+        mock_path_exists.return_value = True
         mocked_config = {"rootlocation": "", "targetlocation": ""}
         mock_get_config.return_value = mocked_config
         url = "https://v.redd.it/k1p5bapj17201/DASH_600_K"
         create(url)
         self.assertTrue(mock_merge.called)
+
+    @mock.patch('os.path.exists')
+    @mock.patch('reddit.videos.writer')
+    @mock.patch('reddit.videos.download')
+    @mock.patch('reddit.videos.get_config')
+    @mock.patch('reddit.videos.copy2')
+    def test_copy_video(self, mock_copy, mock_get_config, mock_download, mock_writer, mock_path_exists):
+        """
+        GIVEN a video file valid url with no audio
+        WHEN the video is downloaded from reddit
+        THEN it should be copied to final directory
+        """
+        mocked_request = MagicMock()
+        mocked_request.content = ""
+        mock_download.return_value = mocked_request
+        mock_path_exists.return_value = False
+        mocked_config = {"rootlocation": "", "targetlocation": ""}
+        mock_get_config.return_value = mocked_config
+        url = "https://v.redd.it/k1p5bapj17201/DASH_600_K"
+        create(url)
+        self.assertTrue(mock_copy.called)
 
     @mock.patch('reddit.videos.get_config')
     def test_create_video_raise_exception(self, mock_get_config):

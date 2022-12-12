@@ -1,6 +1,6 @@
 import logging
 import os.path
-import shutil
+from shutil import copy2
 import time
 from datetime import datetime
 
@@ -41,7 +41,7 @@ def create(url):
     if os.path.exists(audio_name):
         merge(video_name, audio_name, filename)
     else:
-        shutil.copy2(video_name, filename)
+        copy2(video_name, filename)
 
 
 def save(url, filename):
