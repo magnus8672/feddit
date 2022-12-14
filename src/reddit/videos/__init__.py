@@ -13,14 +13,15 @@ from video.process import merge
 
 MODE = "wb"
 DATE_FORMAT = "%d%m%Y%H%M%S"
-# TODO: delay should be an option in feddit.ini
-DELAY = 2
 
 
 def create_all(videos_url):
+    config = get_config()
+    delay = int(config["delay"])
+
     for url in videos_url:
         create(url)
-        time.sleep(DELAY)
+        time.sleep(delay)
 
 
 def create(url):
