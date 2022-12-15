@@ -32,5 +32,4 @@ class TestRedditDownloader(TestCase):
             url = ""
             params = {}
             download(url, params)
-
-    #TODO: Stream test
+    
