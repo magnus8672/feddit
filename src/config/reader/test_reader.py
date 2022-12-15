@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 
 from tests_helpers.fake_file import fake_ini_file
-from config.reader import read, validate_filename
+from config.reader import read, validate_filename, MissingFilenameException
 
 
 class TestConfigReader(TestCase):
@@ -20,7 +20,7 @@ class TestConfigReader(TestCase):
         self.assertTrue(config.has_section(section_name))
 
     def test_read_with_empty_filename_raise_exception(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(MissingFilenameException):
             """
             GIVEN parameter filename is empty
             WHEN the read function executes

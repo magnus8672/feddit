@@ -1,5 +1,7 @@
 import configparser
 
+from config.reader.MissingFilenameException import MissingFilenameException
+
 
 def read(filename):
     validate_filename(filename)
@@ -10,5 +12,4 @@ def read(filename):
 
 def validate_filename(filename):
     if not filename:
-        # TODO: Raise a more detailed exception
-        raise Exception
+        raise MissingFilenameException
