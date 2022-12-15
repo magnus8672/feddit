@@ -12,7 +12,7 @@ from pprint import pformat
 
 from config.parser import get_config
 from filesystem.directory import clean
-from reddit.parser import get_json, extract_next_index, extract_video_url
+from reddit.parser import get_json, extract_next_index, extract_video_url, MissingNextIndexException
 from reddit.videos import create_all
 
 
@@ -42,7 +42,7 @@ def main():
         logging.info("Grabbing list of Video URLS from JSON")
         scraped_urls += extract_video_url(videos)
         #set a new index value parameter in the URI so we can get the next 100 reddit objects after the index
-        next_index = extract_next_index(response)
+        next_index = get_next_index(response)
         params['after'] = next_index
         print(next_index)
         logging.info("New JSON Index = " + next_index)
@@ -59,6 +59,13 @@ def main():
     create_all(scraped_urls)
     #cleanup all the left over original video and audio files
     clean(config["rootlocation"])
+
+
+def get_next_index(response):
+    try:
+        return extract_next_index(response)
+    except MissingNextIndexException:
+        return ""
 
 
 main()

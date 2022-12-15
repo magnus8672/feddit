@@ -52,3 +52,5 @@ class TestRedditParser(TestCase):
         """
         mocked_dictionary = {}
         self.assertFalse(check_video(mocked_dictionary))
+
+    # TODO: extract_next_index tests

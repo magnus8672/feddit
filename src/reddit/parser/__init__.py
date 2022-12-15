@@ -3,6 +3,7 @@ import logging
 
 from reddit.downloader import download
 from config.parser import get_config
+from reddit.parser.missing_next_index_exception import MissingNextIndexException
 
 DEFAULT_LIMIT = 100
 
@@ -32,6 +33,6 @@ def check_video(video):
 
 def extract_next_index(loaded_json):
     if loaded_json['data']['after'] is None:
-        return ""
+        raise MissingNextIndexException
 
     return loaded_json['data']['after']
