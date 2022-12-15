@@ -31,4 +31,7 @@ def check_video(video):
 
 
 def extract_next_index(loaded_json):
+    if loaded_json['data']['after'] is None:
+        return ""
+
     return loaded_json['data']['after']
