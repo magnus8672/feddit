@@ -1,6 +1,6 @@
 import configparser
 
-from config.reader.MissingFilenameException import MissingFilenameException
+from config.reader.missing_filename_exception import MissingFilenameException
 
 
 def read(filename):
