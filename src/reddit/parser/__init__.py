@@ -1,8 +1,7 @@
-import json
 import logging
 
-from reddit.downloader import download
 from config.parser import get_config
+from reddit.downloader import download
 from reddit.parser.missing_next_index_exception import MissingNextIndexException
 
 DEFAULT_LIMIT = 100
